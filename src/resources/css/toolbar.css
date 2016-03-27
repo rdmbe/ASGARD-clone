@@ -1,0 +1,36 @@
+.tool-bar{
+    -fx-background-color: white;
+    -fx-border-style: solid;
+    -fx-border-width: 0 0 0.3 0;
+    -fx-border-color: #212121;
+    -fx-border-insets: 0;
+    -fx-border-radius: 0;
+}
+
+.button {
+    -fx-background-color: transparent, transparent, transparent, transparent;
+}
+
+.button:hover{
+    -fx-background-color: transparent, #cce5ff, #cce5ff, transparent;
+}
+
+.button:armed {
+    -fx-background-color: transparent, #cce5ff, #cce5ff, rgba(0,0,0,.2);
+}
+
+.tooltip {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0 0 0 0;
+
+    -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em;  /*4 8 4 8 */
+
+    -fx-font-family: "Segoe UI Semilight", "Segoe UI Light", "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-text-fill: rgba(0, 0, 0, 0.6);
+
+    -fx-border-color: #808080;
+    -fx-border-width: 1;
+
+    -fx-effect: null;
+}

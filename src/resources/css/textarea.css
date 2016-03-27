@@ -1,0 +1,11 @@
+.text-area{
+    -fx-background-radius: 0, 0;
+
+    -fx-background-color: #bababa, white;
+    -fx-background-insets: 0, 2;
+
+    -fx-prompt-text-fill: #9f9f9f;
+
+    -fx-highlight-fill: #008287; /* TODO: this probably is the "active" color" */
+    -fx-highlight-text-fill: white;
+}

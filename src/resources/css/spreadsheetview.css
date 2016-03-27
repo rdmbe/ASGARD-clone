@@ -1,0 +1,95 @@
+.cell-spreadsheet .table-row-cell {
+    -fx-background-color: transparent;
+}
+
+.spreadsheet-cell{
+    -fx-background-color: -fx-table-cell-border-color, white;
+    -fx-background-insets: 0, 0 1 1 0;
+    -fx-border-width : 0.125;
+}
+
+.spreadsheet-cell:selected{
+    -fx-background-color: #cce5ff;
+    -fx-border-width : 0.125;
+    -fx-border-color : #202020;
+    -fx-text-fill: -fx-selection-bar-text; 
+}
+
+/* NORMAL CELL */
+.spreadsheet-cell:filled:focused:selected,
+.spreadsheet-cell:filled:focused:selected:hover {
+    -fx-background-color: white;
+    -fx-border-color: rgba(17,129,175,100);
+    -fx-border-width : 3;
+    -fx-text-fill: -fx-selection-bar-text; 
+}
+
+.spreadsheet-cell:hover,
+.spreadsheet-cell:filled:focused {
+    -fx-background-color: white;
+    -fx-border-color: rgba(17,129,175,100);
+    -fx-border-width : 3;
+    -fx-text-fill: -fx-text-inner-color;
+    -fx-background-insets: 0, 0 0 1 0;
+}
+
+/* HORIZONTAL AND VERTICAL HEADER SELECTION */
+VerticalHeader > Label {
+    -fx-background-color: -fx-box-border, -fx-inner-border, -fx-body-color, white;
+    -fx-background-insets: 0, 0 1 1 0, 1 2 2 1;
+    -fx-border-width: 0.125 1 0.125 0;
+    -fx-border-color: #a0a0a0;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-weight: none;
+    -fx-size: 3em;
+    -fx-text-fill: -fx-selection-bar-text,#c0c0c0;
+    -fx-alignment: center;
+    -fx-font-style : normal;
+}
+
+HorizontalHeaderColumn > TableColumnHeader{
+    -fx-background-color: -fx-box-border, -fx-inner-border,  white;
+    -fx-background-insets: 0, 0 1 1 0, 1 2 2 1;
+    -fx-border-width: 0 0.125 1 0.125;
+    -fx-border-color: #a0a0a0;
+    -fx-font-weight: none;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-size: 3em;
+    -fx-text-fill: -fx-selection-bar-text,#c0c0c0;
+    -fx-alignment: center;
+}
+
+HorizontalHeaderColumn > TableColumnHeader.selected{
+    -fx-background-color: -fx-box-border, -fx-inner-border,  #cce5ff;
+    -fx-background-insets: 0, 0 1 1 0, 1 2 2 1;
+    -fx-border-width: 0 0.5 4 0.5;
+    -fx-border-color: rgba(17,129,175,100);
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-size: 3em;
+    -fx-text-fill: rgba(17,129,175,100);
+    -fx-alignment: center;
+}
+
+/*HorizontalHeaderColumn > TableColumnHeader > Label{
+    -fx-background-color: -fx-box-border, -fx-inner-border,  white;
+    -fx-background-insets: 0, 0 1 1 0, 1 2 2 1;
+    -fx-border-width: 0 0 0 0;
+    -fx-font-weight: none;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-size: 3em;
+    -fx-text-fill: -fx-selection-bar-text,#c0c0c0;
+    -fx-alignment: center;
+}*/
+
+VerticalHeader > Label.selected{
+    -fx-background-color: #cce5ff;
+    -fx-border-color: rgba(17,129,175,100);
+    -fx-border-width: 0.25 3 0.25 0;
+    -fx-background-insets: 0, 0 1 1 0, 1 2 2 1;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-size: 3em;
+    -fx-text-fill: rgba(17,129,175,100);
+    -fx-alignment: center;
+}
