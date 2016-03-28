@@ -15,6 +15,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import mvp.model.Data;
+import mvp.model.Variable;
 
 /**
  *
@@ -25,29 +27,35 @@ public class GWRAnalyzeView extends HBox{
     Label modelLbl = getModelLbl();
     ComboBox<String> modelCmb = getModelCmb();
     Label xCoordinateLbl = getXCoordinateLbl();
-    ComboBox<String> xCoordinateCmb = getXCoordinateCmb();
+    ComboBox<String> xCoordinateCmb;
     Label yCoordinateLbl = getYCoordinateLbl();
-    ComboBox<String> yCoordinateCmb = getYCoordinateCmb();
+    ComboBox<String> yCoordinateCmb;
     Label kernelLbl = getKernelLbl();
     ComboBox<String> kernelCmb = getKernelCmb();
     Label bandwidthLbl = getBandwidthLbl();
     ComboBox<String> bandwidthCmb = getBandwidthCmb();
     Label selectionLbl = getSelectionLbl();
     ComboBox<String> selectionCmb = getSelectionCmb();
-    Label indVarLbl = getIndVarLbl();
-    TextField indVarFld = getIndVarFld();
-    Button indVarBtn = getIndVarBtn();
     Label depVarLbl = getDepVarLbl();
-    TextArea depVarArea = getDepVarArea();
-    Button depVarBtn = getDepVarBtn();
-    Button okBtn = getOkBtn();
-    Button cancelBtn = getCancelBtn();
+    TextField depVarFld = getDepVarFld();
+    public Button indVarBtn = getIndVarBtn();
+    Label indVarLbl = getIndVarLbl();
+    TextArea indVarArea = getIndVarArea();
+    public Button depVarBtn = getDepVarBtn();
+    public Button okBtn = getOkBtn();
+    public Button cancelBtn = getCancelBtn();
     
-    public GWRAnalyzeView(){
+    private final Data data;
+    
+    public GWRAnalyzeView(Data data){
+        this.data = data;
         initGWRAnalyze();
     }
     
     private void initGWRAnalyze(){
+        xCoordinateCmb = getXCoordinateCmb(data);
+        yCoordinateCmb = getYCoordinateCmb(data);
+        
         VBox leftVBox = new VBox();
         VBox rightVBox = new VBox();
         
@@ -85,10 +93,10 @@ public class GWRAnalyzeView extends HBox{
         leftVBox.setSpacing(30);
         leftVBox.setStyle("-fx-padding : 10");
         
-        yVarHBox.getChildren().addAll(indVarFld,indVarBtn);
+        yVarHBox.getChildren().addAll(depVarFld,depVarBtn);
         yVarHBox.setAlignment(Pos.BASELINE_LEFT);
         yVarHBox.setSpacing(5);
-        xVarHBox.getChildren().addAll(depVarArea,depVarBtn);
+        xVarHBox.getChildren().addAll(indVarArea,indVarBtn);
         xVarHBox.setAlignment(Pos.TOP_LEFT);
         xVarHBox.setSpacing(5);
         btnHBox.getChildren().addAll(okBtn,cancelBtn);
@@ -97,11 +105,11 @@ public class GWRAnalyzeView extends HBox{
         
         VBox yVarVBox = new VBox();
         yVarVBox.setSpacing(5);
-        yVarVBox.getChildren().addAll(indVarLbl,yVarHBox);
+        yVarVBox.getChildren().addAll(depVarLbl,yVarHBox);
         
         VBox xVarVBox = new VBox();
         xVarVBox.setSpacing(5);
-        xVarVBox.getChildren().addAll(depVarLbl,xVarHBox);
+        xVarVBox.getChildren().addAll(indVarLbl,xVarHBox);
         
         rightVBox.getChildren().addAll(yVarVBox,xVarVBox,btnHBox);
         rightVBox.setPrefSize(250,600);
@@ -134,9 +142,14 @@ public class GWRAnalyzeView extends HBox{
         return label;
     }
     
-    private ComboBox<String> getXCoordinateCmb(){
+    private ComboBox<String> getXCoordinateCmb(Data data){
         ComboBox<String> cmb = new ComboBox<>();
         cmb.getStylesheets().add("resources/css/combobox.css");
+        ObservableList<String>variablesName = FXCollections.observableArrayList();
+        for(int i = 0;i < data.getVariables().size();i++){
+            variablesName.add(data.getVariables().get(i).getName());
+        }
+        cmb.setItems(variablesName);
         
         return cmb;
     }
@@ -148,9 +161,14 @@ public class GWRAnalyzeView extends HBox{
         return label;
     }
     
-    private ComboBox<String> getYCoordinateCmb(){
+    private ComboBox<String> getYCoordinateCmb(Data data){
         ComboBox<String> cmb = new ComboBox<>();
         cmb.getStylesheets().add("resources/css/combobox.css");
+        ObservableList<String>variablesName = FXCollections.observableArrayList();
+        for(int i = 0;i < data.getVariables().size();i++){
+            variablesName.add(data.getVariables().get(i).getName());
+        }
+        cmb.setItems(variablesName);
         
         return cmb;
     }
@@ -200,14 +218,14 @@ public class GWRAnalyzeView extends HBox{
         return cmb;
     }
     
-    private Label getIndVarLbl(){
-        Label label = new Label("Independent Variable :");
+    private Label getDepVarLbl(){
+        Label label = new Label("Dependent Variable :");
         label.getStylesheets().add("resources/css/label.css");
         
         return label;
     }
     
-    private TextField getIndVarFld(){
+    private TextField getDepVarFld(){
         TextField field = new TextField();
         field.getStylesheets().add("resources/css/textfield.css");
         field.setDisable(true);
@@ -216,29 +234,30 @@ public class GWRAnalyzeView extends HBox{
         return field;
     }
     
-    private Button getIndVarBtn(){
+    private Button getDepVarBtn(){
         Button button = new Button("...");
         button.getStylesheets().add("resources/css/button.css");
         
         return button;
     }
     
-    private Label getDepVarLbl(){
+    private Label getIndVarLbl(){
         Label label = new Label("Independent Variable :");
         label.getStylesheets().add("resources/css/label.css");
         
         return label;
     }
     
-    private TextArea getDepVarArea(){
+    private TextArea getIndVarArea(){
         TextArea area = new TextArea();
         area.getStylesheets().add("resources/css/textarea.css");
         area.setPrefSize(200, 275);
+        area.setDisable(true);
         
         return area;
     }
     
-    private Button getDepVarBtn(){
+    private Button getIndVarBtn(){
         Button button = new Button("...");
         button.getStylesheets().add("resources/css/button.css");
         

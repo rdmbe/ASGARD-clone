@@ -8,6 +8,8 @@ package mvp.view;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -19,6 +21,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
@@ -62,6 +65,9 @@ public class MainWindowView extends BorderPane {
     
     public MenuItem gwrItem;
     
+    public TextField coordinateField = getCoordinateField();
+    public TextField functionField = getFunctionField();
+    
     public SpreadsheetView spreadsheet = getSpreadsheet();
         
     public MainWindowView(){
@@ -69,10 +75,7 @@ public class MainWindowView extends BorderPane {
     }
     
     private void initMainWindow(){
-        TextField functionField = getFunctionField();
-        SpreadsheetView spreadSheet = getSpreadsheet();
-        
-        HBox centerHBox = new HBox(getCoordinateField(),getFunctionImage(),functionField);
+        HBox centerHBox = new HBox(coordinateField,getFunctionImage(),functionField);
         centerHBox.setAlignment(Pos.CENTER_LEFT);
         centerHBox.setSpacing(5);
         centerHBox.setHgrow(functionField, Priority.ALWAYS);
@@ -83,8 +86,8 @@ public class MainWindowView extends BorderPane {
         VBox topVBox = new VBox(getMenuBar(),getToolBar(),centerHBox);
         topVBox.setStyle("-fx-background-color: #cce5ff;");
         
-        VBox centerVBox = new VBox(spreadSheet);
-        centerVBox.setVgrow(spreadSheet,Priority.ALWAYS);
+        VBox centerVBox = new VBox(spreadsheet);
+        centerVBox.setVgrow(spreadsheet,Priority.ALWAYS);
         centerVBox.setPadding(new Insets(5,0,0,0));
         centerVBox.setStyle("-fx-background-color: rgba(17,129,175,100);");
 
@@ -292,4 +295,5 @@ public class MainWindowView extends BorderPane {
         spreadsheet.setGrid(grid);
         spreadsheet.getGrid().getColumnHeaders().setAll(listHeader);
     }
+    
 }

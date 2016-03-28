@@ -10,5 +10,5 @@ package mvp.model;
  * @author Eki
  */
 class OLSGWR {
-    private File file;
+    private Data file;
 }

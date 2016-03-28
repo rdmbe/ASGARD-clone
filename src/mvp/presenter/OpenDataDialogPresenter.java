@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -20,6 +21,8 @@ import javafx.collections.ObservableList;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import mvp.model.Data;
+import mvp.model.Variable;
 import mvp.view.MainWindowView;
 import mvp.view.OpenDataDialogView;
 import org.apache.poi.ss.usermodel.Cell;
@@ -40,10 +43,12 @@ public class OpenDataDialogPresenter {
     
     private final OpenDataDialogView view;
     private final MainWindowView mwview;
+    private final Data data;
     
-    public OpenDataDialogPresenter(OpenDataDialogView view,MainWindowView mwview){
+    public OpenDataDialogPresenter(OpenDataDialogView view,MainWindowView mwview,Data data){
         this.view = view;
         this.mwview = mwview;
+        this.data = data;
         attachEvents();
     }
     
@@ -100,6 +105,11 @@ public class OpenDataDialogPresenter {
                         }
                     }
                     
+                    ObservableList<String> variableType = FXCollections.observableArrayList();
+                    for(int i = 0;i < listHeader.size(); i++){
+                        variableType.add(null);
+                    }
+                    
                     while (iterator.hasNext()) {
                         Row nextRow = iterator.next();
                         Iterator<Cell> cellIterator = nextRow.cellIterator();
@@ -107,17 +117,27 @@ public class OpenDataDialogPresenter {
                             Cell cell = cellIterator.next();
                             switch (cell.getCellType()) {
                                 case Cell.CELL_TYPE_STRING:
+                                    variableType.set(cell.getColumnIndex(), "Nominal");
                                     rows.get(cell.getRowIndex()-1).set(cell.getColumnIndex(),SpreadsheetCellType.STRING.createCell(cell.getRowIndex()-1, cell.getColumnIndex(), 1, 1,cell.getStringCellValue()));
                                     break;
                                 case Cell.CELL_TYPE_BOOLEAN:
+                                    variableType.set(cell.getColumnIndex(), "Nominal");
                                     rows.get(cell.getRowIndex()-1).set(cell.getColumnIndex(),SpreadsheetCellType.STRING.createCell(cell.getRowIndex()-1, cell.getColumnIndex(), 1, 1,String.valueOf(cell.getBooleanCellValue())));
                                     break;
                                 case Cell.CELL_TYPE_NUMERIC:
+                                    variableType.set(cell.getColumnIndex(), "Numeric");
                                     rows.get(cell.getRowIndex()-1).set(cell.getColumnIndex(),SpreadsheetCellType.DOUBLE.createCell(cell.getRowIndex()-1, cell.getColumnIndex(), 1, 1,cell.getNumericCellValue()));
                                     break;
                             }
                         }
                     }
+                    
+                    ObservableList<Variable> variables = FXCollections.observableArrayList();
+                    for(int i = 0;i < listHeader.size() && i < variableType.size(); i++){
+                        Variable variable = new Variable(listHeader.get(i),variableType.get(i));
+                        variables.add(variable);
+                    }
+                    data.setVariables(variables);
                 }else if(!colHeader){
                     while (iterator.hasNext()) {
                         Row nextRow = iterator.next();
