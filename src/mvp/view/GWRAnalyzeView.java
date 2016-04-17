@@ -15,7 +15,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import mvp.model.Data;
+import mvp.model.Gwr;
 import mvp.model.Variable;
 
 /**
@@ -25,36 +27,44 @@ import mvp.model.Variable;
 public class GWRAnalyzeView extends HBox{
     
     Label modelLbl = getModelLbl();
-    ComboBox<String> modelCmb = getModelCmb();
+    public ComboBox<String> modelCmb;
     Label xCoordinateLbl = getXCoordinateLbl();
-    ComboBox<String> xCoordinateCmb;
+    public ComboBox<String> xCoordinateCmb;
     Label yCoordinateLbl = getYCoordinateLbl();
-    ComboBox<String> yCoordinateCmb;
+    public ComboBox<String> yCoordinateCmb;
     Label kernelLbl = getKernelLbl();
-    ComboBox<String> kernelCmb = getKernelCmb();
+    public ComboBox<String> kernelCmb;
     Label bandwidthLbl = getBandwidthLbl();
-    ComboBox<String> bandwidthCmb = getBandwidthCmb();
+    public ComboBox<String> bandwidthCmb;
     Label selectionLbl = getSelectionLbl();
-    ComboBox<String> selectionCmb = getSelectionCmb();
+    public ComboBox<String> selectionCmb;
     Label depVarLbl = getDepVarLbl();
-    TextField depVarFld = getDepVarFld();
+    public TextField depVarFld;
     public Button indVarBtn = getIndVarBtn();
     Label indVarLbl = getIndVarLbl();
-    TextArea indVarArea = getIndVarArea();
+    public TextArea indVarArea = getIndVarArea();
     public Button depVarBtn = getDepVarBtn();
     public Button okBtn = getOkBtn();
     public Button cancelBtn = getCancelBtn();
     
     private final Data data;
+    private final Gwr gwr;
     
-    public GWRAnalyzeView(Data data){
+    public GWRAnalyzeView(Data data,Gwr gwr){
         this.data = data;
+        this.gwr = gwr;
         initGWRAnalyze();
+        bindDataToModel();
     }
     
     private void initGWRAnalyze(){
+        modelCmb = getModelCmb();
         xCoordinateCmb = getXCoordinateCmb(data);
         yCoordinateCmb = getYCoordinateCmb(data);
+        kernelCmb = getKernelCmb();
+        bandwidthCmb = getBandwidthCmb();
+        selectionCmb = getSelectionCmb();
+        depVarFld = getDepVarFld();
         
         VBox leftVBox = new VBox();
         VBox rightVBox = new VBox();
@@ -276,6 +286,15 @@ public class GWRAnalyzeView extends HBox{
         button.getStylesheets().add("resources/css/button.css");
         
         return button;
+    }
+    
+    private void bindDataToModel(){
+        depVarFld.textProperty().bindBidirectional(gwr.getDepVarProperty());
+    }
+    
+    public void closeStage(){
+        Stage stage = (Stage) this.getScene().getWindow();
+        stage.close();
     }
     
 }

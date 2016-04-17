@@ -84,6 +84,8 @@ public class OpenDataDialogPresenter {
             
             try (Workbook workbook = new XSSFWorkbook(inputStream)) {
                 Sheet firstSheet = workbook.getSheetAt(0);
+                data.setRowNumber(firstSheet.getLastRowNum());
+                data.setColumnNumber(firstSheet.getRow(0).getLastCellNum());
                 Iterator<Row> iterator = firstSheet.iterator();
                 
                 ObservableList<ObservableList<SpreadsheetCell>> rows = FXCollections.observableArrayList();
@@ -117,15 +119,15 @@ public class OpenDataDialogPresenter {
                             Cell cell = cellIterator.next();
                             switch (cell.getCellType()) {
                                 case Cell.CELL_TYPE_STRING:
-                                    variableType.set(cell.getColumnIndex(), "Nominal");
+                                    variableType.set(cell.getColumnIndex(), "String");
                                     rows.get(cell.getRowIndex()-1).set(cell.getColumnIndex(),SpreadsheetCellType.STRING.createCell(cell.getRowIndex()-1, cell.getColumnIndex(), 1, 1,cell.getStringCellValue()));
                                     break;
                                 case Cell.CELL_TYPE_BOOLEAN:
-                                    variableType.set(cell.getColumnIndex(), "Nominal");
+                                    variableType.set(cell.getColumnIndex(), "Boolean");
                                     rows.get(cell.getRowIndex()-1).set(cell.getColumnIndex(),SpreadsheetCellType.STRING.createCell(cell.getRowIndex()-1, cell.getColumnIndex(), 1, 1,String.valueOf(cell.getBooleanCellValue())));
                                     break;
                                 case Cell.CELL_TYPE_NUMERIC:
-                                    variableType.set(cell.getColumnIndex(), "Numeric");
+                                    variableType.set(cell.getColumnIndex(), "Double");
                                     rows.get(cell.getRowIndex()-1).set(cell.getColumnIndex(),SpreadsheetCellType.DOUBLE.createCell(cell.getRowIndex()-1, cell.getColumnIndex(), 1, 1,cell.getNumericCellValue()));
                                     break;
                             }
@@ -158,7 +160,6 @@ public class OpenDataDialogPresenter {
                         }
                     }
                 }
-                
                 grid.setRows(rows);
                 mwview.drawTable(listHeader,grid);
             }

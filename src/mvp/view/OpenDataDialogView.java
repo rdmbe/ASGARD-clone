@@ -16,6 +16,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import mvp.model.Data;
+import mvp.model.Gwr;
 
 /**
  *
@@ -33,7 +34,7 @@ public class OpenDataDialogView extends VBox {
     public Button okBtn = getOkBtn();
     public Button cancelBtn = getCancelBtn();
     
-    private Data data;
+    private final Data data;
     
     public OpenDataDialogView(Data data){
         this.data = data;

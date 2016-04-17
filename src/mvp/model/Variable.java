@@ -18,6 +18,10 @@ public class Variable {
 
     public Variable() {
     }
+    
+    public Variable(String name){
+        this.name.setValue(name);
+    }
 
     public Variable(String name,String type){
         this.name.setValue(name);
@@ -32,7 +36,7 @@ public class Variable {
         this.name.setValue(name);
     }
     
-    public String gettype(){
+    public String getType(){
         return type.get();
     }
     

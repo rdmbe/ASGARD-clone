@@ -27,6 +27,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mvp.model.Data;
+import mvp.model.Gwr;
 import mvp.view.GWRAnalyzeView;
 import mvp.view.MainWindowView;
 import mvp.view.OpenDataDialogView;
@@ -44,8 +45,9 @@ import org.controlsfx.control.spreadsheet.SpreadsheetCellType;
  * @author Eki
  */
 public class MainWindowPresenter {
-    private MainWindowView view;
-    private Data data = new Data();
+    private final MainWindowView view;
+    private final Data data = new Data();
+    private final Gwr gwr = new Gwr();
     
     public MainWindowPresenter(MainWindowView view){
         this.view = view;
@@ -95,8 +97,8 @@ public class MainWindowPresenter {
     }
     
     private void showGWRDialog(){
-        GWRAnalyzeView gwrAnalyzeView = new GWRAnalyzeView(data);
-        GWRAnalyzePresenter gwrAnalyzePresenter = new GWRAnalyzePresenter(gwrAnalyzeView,data);
+        GWRAnalyzeView gwrAnalyzeView = new GWRAnalyzeView(data,gwr);
+        GWRAnalyzePresenter gwrAnalyzePresenter = new GWRAnalyzePresenter(gwrAnalyzeView,view,data,gwr);
         Stage stage = new Stage();
         Scene scene = new Scene(gwrAnalyzeView,500,500);
         stage.setScene(scene);
@@ -106,7 +108,7 @@ public class MainWindowPresenter {
         stage.show();
     }
     
-    public String toAlphabetic(int i) {
+    private String toAlphabetic(int i) {
         if( i<0 ) {
             return "-"+toAlphabetic(-i-1);
         }

@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import mvp.model.Data;
 import mvp.model.Variable;
 
@@ -82,5 +83,10 @@ public class DepVarSelectorView extends VBox{
         btn.getStylesheets().add("resources/css/button.css");
         
         return btn;
+    }
+    
+    public void closeStage(){
+        Stage stage = (Stage) this.getScene().getWindow();
+        stage.close();
     }
 }

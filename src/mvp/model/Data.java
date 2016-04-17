@@ -17,6 +17,8 @@ import javafx.collections.ObservableList;
 public class Data {
     private StringProperty path = new SimpleStringProperty();
     private ObservableList<Variable> variables = FXCollections.observableArrayList();
+    private int rowNumber;
+    private int columnNumber;
     
     public Data(){
         
@@ -50,4 +52,22 @@ public class Data {
     public void setVariables(ObservableList<Variable>variables){
         this.variables = variables;
     }
+
+    public int getRowNumber() {
+        return rowNumber;
+    }
+
+    public void setRowNumber(int rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
+    public int getColumnNumber() {
+        return columnNumber;
+    }
+
+    public void setColumnNumber(int columnNumber) {
+        this.columnNumber = columnNumber;
+    }
+    
+    
 }

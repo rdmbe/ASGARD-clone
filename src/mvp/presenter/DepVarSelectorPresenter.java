@@ -6,6 +6,7 @@
 package mvp.presenter;
 
 import mvp.view.DepVarSelectorView;
+import mvp.view.GWRAnalyzeView;
 
 /**
  *
@@ -14,8 +15,22 @@ import mvp.view.DepVarSelectorView;
 public class DepVarSelectorPresenter {
     
     private final DepVarSelectorView view;
+    private final GWRAnalyzeView gaview;
     
-    public DepVarSelectorPresenter(DepVarSelectorView view){
+    public DepVarSelectorPresenter(DepVarSelectorView view,GWRAnalyzeView gaview){
         this.view = view;
+        this.gaview = gaview;
+        attachEvent();
     }
+    
+    private void attachEvent(){
+        view.okBtn.setOnAction(e -> selectingItem());
+        view.cancelBtn.setOnAction(e -> view.closeStage());
+    }
+    
+    private void selectingItem(){
+        gaview.depVarFld.setText(view.listView.getSelectionModel().getSelectedItem());
+        view.closeStage();
+    }
+
 }
