@@ -150,12 +150,12 @@ public class OlsGwr {
         }
         
         String varNames = "";
-        String formulas = depVar.get()+"~";
-        String colNames = "\""+depVar.get()+"\",";
+        String formulas = depVar.get().replaceAll(" ",".")+"~";
+        String colNames = "\""+depVar.get().replaceAll(" ",".")+"\",";
         for(int i = 0;i < indVarValues.size() && i < indVar.size();i++){
-            varNames = varNames + indVar.get(i);
-            formulas = formulas + indVar.get(i);
-            colNames = colNames + "\"" + indVar.get(i) + "\"";
+            varNames = varNames + indVar.get(i).replaceAll(" ",".").replaceAll("\\(",".").replaceAll("\\)",".");
+            formulas = formulas + indVar.get(i).replaceAll(" ",".").replaceAll("\\(",".").replaceAll("\\)",".");
+            colNames = colNames + "\"" + indVar.get(i).replaceAll(" ",".").replaceAll("\\(",".").replaceAll("\\)",".") + "\"";
             
             if(i != indVar.size()-1){
                 varNames = varNames + ",";
@@ -169,41 +169,42 @@ public class OlsGwr {
                     for(int j = 0;j < vard.length;j++){
                         vard[j] = (double) indVarValues.get(i).get(j);
                     }
-                    r.assign(indVar.get(i), vard);
+                    r.assign(indVar.get(i).replaceAll(" ",".").replaceAll("\\(",".").replaceAll("\\)","."),vard);
                     break;
                 case "class java.lang.String" :
                     String[] vars = new String[indVarValues.get(i).size()];
                     for(int j = 0;j < vars.length;j++){
                         vars[j] = (String) indVarValues.get(i).get(j);
                     }
-                    r.assign(indVar.get(i), vars);
+                    r.assign(indVar.get(i).replaceAll(" ",".").replaceAll("\\(", ".").replaceAll("\\)","."), vars);
                     break;
             }
         }
+        r.eval("library(GWmodel)");
         
-        System.out.println(r.eval("library(GWmodel)"));
+        r.assign("xCoord",xCoordArray);
+        r.assign("yCoord",yCoordArray);
+        r.assign("depvar",depVarArray);
         
-        System.out.println(r.assign("xCoord",xCoordArray));
-        System.out.println(r.assign("yCoord",yCoordArray));
-        System.out.println(r.assign("depvar",depVarArray));
+        System.out.println(varNames);
+        System.out.println(colNames);
         
-        System.out.println(r.eval("indvar <- cbind("+varNames+")"));
-        
-        System.out.println(r.eval("dataset <- as.data.frame(cbind(depvar,indvar))"));
-        System.out.println(r.eval("datacoord <- as.data.frame(cbind(xCoord,yCoord))"));
-        System.out.println(r.eval("colnames(dataset) <- c("+colNames+")"));
-        System.out.println(r.eval("datas <- SpatialPointsDataFrame(coords = datacoord, data = dataset)"));
-        
-        System.out.println(r.assign("formulas", formulas));
+        r.eval("indvar <- cbind("+varNames+")");
+        System.out.println(r.eval("indvar"));
+        r.eval("dataset <-  as.data.frame(cbind(depvar,indvar))");
+        System.out.println(r.eval("dataset"));
+        r.eval("colnames(dataset) <- c("+colNames+")");
+        System.out.println(r.eval("dataset$Pemukiman.Kumuh"));
+//        r.eval("datacoord <- as.data.frame(cbind(xCoord,yCoord))");
         
         File rScript1 = new File("src/rscript/dMat.r");
-        System.out.println(r.eval("source(\""+rScript1.toURI().getPath().substring(1)+"\")"));
-        System.out.println(r.eval("dMat <- dMat(xCoord,yCoord)"));
+        r.eval("source(\""+rScript1.toURI().getPath().substring(1)+"\")");
+//        r.eval("dMat <- dMat(xCoord,yCoord)");
         
         File rScript2 = new File("src/rscript/olsGwr.r");
-        System.out.println(r.eval("source(\""+rScript2.toURI().getPath().substring(1)+"\")"));
-        System.out.println(r.eval("result <- olsgwr(formulas,datas,\"gaussian\",dMat)"));
-        REXP result = r.eval("result$SDF$Intercept");
-        System.out.println(result);
+        r.eval("source(\""+rScript2.toURI().getPath().substring(1)+"\")");
+//        r.eval("result <- olsgwr(formulas,datas,\"gaussian\",dMat)");
+//        REXP result = r.eval("result$SDF$Intercept");
+//        System.out.println(result);
     }
 }
