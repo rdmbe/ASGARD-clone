@@ -28,7 +28,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mvp.model.Data;
 import mvp.model.Gwr;
+import mvp.model.Lm;
 import mvp.view.GWRAnalyzeView;
+import mvp.view.LMAnalyzeView;
 import mvp.view.MainWindowView;
 import mvp.view.OpenDataDialogView;
 import org.apache.poi.ss.usermodel.Cell;
@@ -48,6 +50,7 @@ public class MainWindowPresenter {
     private final MainWindowView view;
     private final Data data = new Data();
     private final Gwr gwr = new Gwr();
+    private final Lm lm = new Lm();
     
     public MainWindowPresenter(MainWindowView view){
         this.view = view;
@@ -61,8 +64,9 @@ public class MainWindowPresenter {
         view.openDataItem.setOnAction(e -> showOpenDataDialog());
         view.saveAsItem.setOnAction(e -> showSaveDialog());
         view.exitItem.setOnAction(e -> Platform.exit());
-        
+        view.glmItem.setOnAction(e -> showLMDialog());
         view.gwrItem.setOnAction(e -> showGWRDialog());
+        
         
         view.spreadsheet.getSelectionModel().getSelectedCells().addListener((Observable observable) -> {
             for(TablePosition cell:view.spreadsheet.getSelectionModel().getSelectedCells()){
@@ -103,6 +107,17 @@ public class MainWindowPresenter {
         Scene scene = new Scene(gwrAnalyzeView,500,500);
         stage.setScene(scene);
         stage.setTitle("GWR Analyze");
+        stage.setResizable(false);
+        stage.centerOnScreen();
+        stage.show();
+    }
+      private void showLMDialog(){
+        LMAnalyzeView lmAnalyzeView = new LMAnalyzeView(data,lm);
+        LMAnalyzePresenter lmAnalyzePresenter = new LMAnalyzePresenter(lmAnalyzeView,view,data,lm);
+        Stage stage = new Stage();
+        Scene scene = new Scene(lmAnalyzeView,500,500);
+        stage.setScene(scene);
+        stage.setTitle("GLM Analyze");
         stage.setResizable(false);
         stage.centerOnScreen();
         stage.show();

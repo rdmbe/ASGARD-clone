@@ -5,7 +5,7 @@
  */
 package mvp.presenter;
 
-import mvp.view.DepVarSelectorView;
+import mvp.view.OutputView;
 import mvp.view.GWRAnalyzeView;
 import mvp.view.LMAnalyzeView;
 
@@ -13,13 +13,13 @@ import mvp.view.LMAnalyzeView;
  *
  * @author Eki
  */
-public class DepVarSelectorPresenter {
+public class OutputPresenter {
     
-    private final DepVarSelectorView view;
+    private final OutputView view;
     private final GWRAnalyzeView gaview;
     private final LMAnalyzeView laview;
     
-    public DepVarSelectorPresenter(DepVarSelectorView view,GWRAnalyzeView gaview,LMAnalyzeView laview ){
+    public OutputPresenter(OutputView view,GWRAnalyzeView gaview,LMAnalyzeView laview ){
         this.view = view;
         this.gaview = gaview;
         this.laview = laview;
@@ -32,13 +32,7 @@ public class DepVarSelectorPresenter {
         }
     
     private void selectingItem(){
-        if (gaview==null){
-            laview.depVarFld.setText(view.listView.getSelectionModel().getSelectedItem());
-        }
-        else if(laview==null){
-            gaview.depVarFld.setText(view.listView.getSelectionModel().getSelectedItem());
-        }
-        view.closeStage();
+              view.closeStage();
     }
 
 }

@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import mvp.presenter.OutputPresenter;
 
 /**
  *
@@ -34,6 +35,9 @@ public class Gwr {
     private ObservableList<ObservableList<Object>> indVarValues;
     
     private OlsGwr olsGwr;
+    private NegBinGwr negBinGwr;
+    private String hasil;
+    
     
     public Gwr(){
         this.model = new SimpleStringProperty();
@@ -50,7 +54,13 @@ public class Gwr {
         this.depVarValues = FXCollections.observableArrayList();
         this.indVarValues = FXCollections.observableArrayList();
         
-        olsGwr = new OlsGwr();
+        
+        //olsGwr = new OlsGwr();
+        //negBinGwr = new NegBinGwr(); 
+       
+        
+        
+        
     }
     
     public StringProperty getModelProperty(){
@@ -180,6 +190,7 @@ public class Gwr {
     public void calculate(){
         switch(model.getValue()){
             case "OLS" : 
+                olsGwr = new OlsGwr();
                 olsGwr.setXCoordValues(xCoordValues);
                 olsGwr.setYCoordValues(yCoordValues);
                 olsGwr.setKernel(kernel.getValue());
@@ -190,10 +201,38 @@ public class Gwr {
                 olsGwr.setIndVarValues(indVarValues);
                 olsGwr.setIndVar(indVar);
                 olsGwr.formula();
+                olsGwr.text();
                 break;
-            case "Logistic" : break;
-            case "Negative-Binomial" : break;
+           
+            case "Negative-Binomial" : 
+                negBinGwr = new NegBinGwr(); 
+                negBinGwr.setXCoordValues(xCoordValues);
+                negBinGwr.setYCoordValues(yCoordValues);
+                negBinGwr.setKernel(kernel.getValue());
+                negBinGwr.setBandwidth(bandwidth.getValue());
+                negBinGwr.setSelection(bandwidth.getValue());
+                negBinGwr.setDepVarValues(depVarValues);
+                negBinGwr.setDepVar(depVar.getValue());
+                negBinGwr.setIndVarValues(indVarValues);
+                negBinGwr.setIndVar(indVar);
+                negBinGwr.formula();
+                break;
+            
             case "Poisson" : break;
         }
+              
     }
+    
+    public String hasil(){
+        switch(model.getValue()){
+            case "OLS" :
+        hasil = olsGwr.text();
+            break;
+                
+            case "Negative-Binomial" : 
+        
+            break;
+    }
+        return hasil;
+}
 }

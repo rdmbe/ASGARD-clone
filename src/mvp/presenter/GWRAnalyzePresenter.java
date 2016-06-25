@@ -13,6 +13,7 @@ import mvp.view.DepVarSelectorView;
 import mvp.view.GWRAnalyzeView;
 import mvp.view.IndVarSelectorView;
 import mvp.view.MainWindowView;
+import mvp.view.OutputView;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -66,11 +67,16 @@ public class GWRAnalyzePresenter {
         view.depVarBtn.setOnAction(e -> showDepVarSelector());
         view.indVarBtn.setOnAction(e -> showIndVarSelector());
         view.okBtn.setOnAction(e -> makeVector());
+        view.cancelBtn.setOnAction (e -> exitStage());
+        
+    }
+    private void exitStage(){
+        view.closeStage();
     }
     
     private void showDepVarSelector(){
         DepVarSelectorView dvsview = new DepVarSelectorView(data);
-        DepVarSelectorPresenter dvspresenter = new DepVarSelectorPresenter(dvsview,view);
+        DepVarSelectorPresenter dvspresenter = new DepVarSelectorPresenter(dvsview,view, null);
         Stage stage = new Stage();
         Scene scene = new Scene(dvsview,250,400);
         stage.setScene(scene);
@@ -82,7 +88,7 @@ public class GWRAnalyzePresenter {
     
     private void showIndVarSelector(){
         IndVarSelectorView ivsview = new IndVarSelectorView(data);
-        IndVarSelectorPresenter dvspresenter = new IndVarSelectorPresenter(ivsview,view,gwr);
+        IndVarSelectorPresenter dvspresenter = new IndVarSelectorPresenter(ivsview,view,gwr,null,null);
         Stage stage = new Stage();
         Scene scene = new Scene(ivsview,250,400);
         stage.setScene(scene);
@@ -126,5 +132,33 @@ public class GWRAnalyzePresenter {
         gwr.setIndVarValues(indVarValues);
 
         gwr.calculate();
+        
+        OutputView outview = new OutputView(data);
+        OutputPresenter outpresenter = new OutputPresenter(outview,view,null);
+    
+        Stage stage = new Stage();
+        Scene scene = new Scene(outview,1600,700);
+        stage.setScene(scene);
+        stage.setTitle("Output ASGARD");
+        stage.setResizable(false);
+        stage.centerOnScreen();
+        stage.show();
+        outview.setTextArea(0,gwr.hasil());
+        
+        view.closeStage();
     }
+    
+   public void ShowOutputView(){
+        
+     OutputView outview = new OutputView(data);
+     OutputPresenter outpresenter = new OutputPresenter(outview,view,null);
+    
+        Stage stage = new Stage();
+        Scene scene = new Scene(outview,1600,700);
+        stage.setScene(scene);
+        stage.setTitle("Output ASGARD");
+        stage.setResizable(false);
+        stage.centerOnScreen();
+        stage.show();
+}
 }

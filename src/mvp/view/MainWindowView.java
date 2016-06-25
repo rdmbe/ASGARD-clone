@@ -64,6 +64,8 @@ public class MainWindowView extends BorderPane {
     public MenuItem exitItem;
     
     public MenuItem gwrItem;
+    public MenuItem lmItem;
+    public MenuItem glmItem;
     
     public TextField coordinateField = getCoordinateField();
     public TextField functionField = getFunctionField();
@@ -257,21 +259,18 @@ public class MainWindowView extends BorderPane {
     }
     
     private Menu getAnalyzeMenu(){
-        Menu menu = new Menu("ANALYZE");
+         Menu menu = new Menu("ANALYZE");
         
         Menu globalItem = new Menu("Global Model");
         Menu localItem = new Menu("Local Model");
-        MenuItem lmItem = new MenuItem("Linear Regression ...");
-        Menu glmItem = new Menu("Generalized Linear Model");
+        lmItem = new MenuItem("Linear Regression ...");
+        glmItem = new MenuItem("Generalized Linear Model ...");
         gwrItem = new MenuItem("Geographically Weighted Regression ...");
-        MenuItem logItem = new MenuItem("Logistic Regression ...");
-        MenuItem poiItem = new MenuItem("Poisson Regression ...");
-        MenuItem nbItem = new MenuItem("Negative Binomial Regression ...");
         
         globalItem.getItems().addAll(lmItem,glmItem);
         localItem.getItems().addAll(gwrItem);
         
-        glmItem.getItems().addAll(logItem,poiItem,nbItem);
+        //glmItem.getItems().addAll(logItem,poiItem,nbItem);
         
         menu.getItems().addAll(globalItem,localItem);
         return menu;

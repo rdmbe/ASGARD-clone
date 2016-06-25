@@ -9,9 +9,11 @@ import javafx.collections.ObservableList;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import mvp.model.Gwr;
+import mvp.model.Lm;
 import mvp.view.DepVarSelectorView;
 import mvp.view.GWRAnalyzeView;
 import mvp.view.IndVarSelectorView;
+import mvp.view.LMAnalyzeView;
 
 /**
  *
@@ -20,12 +22,16 @@ import mvp.view.IndVarSelectorView;
 public class IndVarSelectorPresenter {
     private final IndVarSelectorView view;
     private final GWRAnalyzeView gaview;
+    private final LMAnalyzeView laview;
+    private final Lm lm;
     private final Gwr gwr;
     
-    public IndVarSelectorPresenter(IndVarSelectorView view,GWRAnalyzeView gaview,Gwr gwr){
+    public IndVarSelectorPresenter(IndVarSelectorView view,GWRAnalyzeView gaview,Gwr gwr,LMAnalyzeView laview,Lm lm ){
         this.view = view;
         this.gaview = gaview;
         this.gwr = gwr;
+        this.laview = laview;
+        this.lm = lm;
         attachEvent();
     }
     
@@ -45,10 +51,16 @@ public class IndVarSelectorPresenter {
                 variables.append("\n");
             }
         }
-        
+        if (lm==null){
         gwr.setIndVar(indVar);
+        gaview.indVarArea.setText(variables.toString());}
         
-        gaview.indVarArea.setText(variables.toString());
+        else if (gwr==null){
+            lm.setIndVar(indVar);
+            laview.indVarArea.setText(variables.toString());
+        }
+        
+        
         
         view.closeStage();
     }

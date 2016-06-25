@@ -17,27 +17,17 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import mvp.model.Data;
-import mvp.model.Gwr;
+import mvp.model.Lm;
 import mvp.model.Variable;
 
 /**
  *
  * @author Eki
  */
-public class GWRAnalyzeView extends HBox{
+public class LMAnalyzeView extends HBox{
     
     Label modelLbl = getModelLbl();
     public ComboBox<String> modelCmb;
-    Label xCoordinateLbl = getXCoordinateLbl();
-    public ComboBox<String> xCoordinateCmb;
-    Label yCoordinateLbl = getYCoordinateLbl();
-    public ComboBox<String> yCoordinateCmb;
-    Label kernelLbl = getKernelLbl();
-    public ComboBox<String> kernelCmb;
-    Label bandwidthLbl = getBandwidthLbl();
-    public ComboBox<String> bandwidthCmb;
-    Label selectionLbl = getSelectionLbl();
-    public ComboBox<String> selectionCmb;
     Label depVarLbl = getDepVarLbl();
     public TextField depVarFld;
     public Button indVarBtn = getIndVarBtn();
@@ -48,22 +38,17 @@ public class GWRAnalyzeView extends HBox{
     public Button cancelBtn = getCancelBtn();
     
     private final Data data;
-    private final Gwr gwr;
+    private final Lm lm;
     
-    public GWRAnalyzeView(Data data,Gwr gwr){
+    public LMAnalyzeView(Data data,Lm lm){
         this.data = data;
-        this.gwr = gwr;
-        initGWRAnalyze();
+        this.lm = lm;
+        initLMAnalyze();
         bindDataToModel();
     }
     
-    private void initGWRAnalyze(){
+    private void initLMAnalyze(){
         modelCmb = getModelCmb();
-        xCoordinateCmb = getXCoordinateCmb(data);
-        yCoordinateCmb = getYCoordinateCmb(data);
-        kernelCmb = getKernelCmb();
-        bandwidthCmb = getBandwidthCmb();
-        selectionCmb = getSelectionCmb();
         depVarFld = getDepVarFld();
         
         VBox leftVBox = new VBox();
@@ -79,23 +64,23 @@ public class GWRAnalyzeView extends HBox{
         
         VBox xCoordVBox = new VBox();
         xCoordVBox.setSpacing(5);
-        xCoordVBox.getChildren().addAll(xCoordinateLbl,xCoordinateCmb);
+       
         
         VBox yCoordVBox = new VBox();
         yCoordVBox.setSpacing(5);
-        yCoordVBox.getChildren().addAll(yCoordinateLbl,yCoordinateCmb);
+       
         
         VBox kernelVBox = new VBox();
         kernelVBox.setSpacing(5);
-        kernelVBox.getChildren().addAll(kernelLbl,kernelCmb);
+       
         
         VBox bandwidthVBox = new VBox();
         bandwidthVBox.setSpacing(5);
-        bandwidthVBox.getChildren().addAll(bandwidthLbl,bandwidthCmb);
+        
         
         VBox selectionVBox = new VBox();
         selectionVBox.setSpacing(5);
-        selectionVBox.getChildren().addAll(selectionLbl,selectionCmb);
+        
         
         leftVBox.getChildren().addAll(modelVBox,xCoordVBox,yCoordVBox,
                 kernelVBox,bandwidthVBox,selectionVBox);
@@ -138,96 +123,14 @@ public class GWRAnalyzeView extends HBox{
     }
     
     private ComboBox<String> getModelCmb(){
-        ObservableList<String>list = FXCollections.observableArrayList("OLS","Negative-Binomial");
+        ObservableList<String>list = FXCollections.observableArrayList("Logistic","Negative-Binomial","Poisson");
         ComboBox<String> cmb = new ComboBox<>(list);
         cmb.getStylesheets().add("resources/css/combobox.css");
         
         return cmb;
     }
     
-    private Label getXCoordinateLbl(){
-        Label label = new Label("X Coordinate :");
-        label.getStylesheets().add("resources/css/label.css");
-        
-        return label;
-    }
-    
-    private ComboBox<String> getXCoordinateCmb(Data data){
-        ComboBox<String> cmb = new ComboBox<>();
-        cmb.getStylesheets().add("resources/css/combobox.css");
-        ObservableList<String>variablesName = FXCollections.observableArrayList();
-        for(int i = 0;i < data.getVariables().size();i++){
-            variablesName.add(data.getVariables().get(i).getName());
-        }
-        cmb.setItems(variablesName);
-        
-        return cmb;
-    }
-    
-    private Label getYCoordinateLbl(){
-        Label label = new Label("Y Coordinate :");
-        label.getStylesheets().add("resources/css/label.css");
-        
-        return label;
-    }
-    
-    private ComboBox<String> getYCoordinateCmb(Data data){
-        ComboBox<String> cmb = new ComboBox<>();
-        cmb.getStylesheets().add("resources/css/combobox.css");
-        ObservableList<String>variablesName = FXCollections.observableArrayList();
-        for(int i = 0;i < data.getVariables().size();i++){
-            variablesName.add(data.getVariables().get(i).getName());
-        }
-        cmb.setItems(variablesName);
-        
-        return cmb;
-    }
-    
-    private Label getKernelLbl(){
-        Label label = new Label("Kernel Function :");
-        label.getStylesheets().add("resources/css/label.css");
-        
-        return label;
-    }
-    
-    private ComboBox<String> getKernelCmb(){
-        ObservableList<String>list = FXCollections.observableArrayList("Fixed Gaussian","Adaptive Gaussian");
-        ComboBox<String> cmb = new ComboBox<>(list);
-        cmb.getStylesheets().add("resources/css/combobox.css");
-        
-        return cmb;
-    }
-    
-    private Label getBandwidthLbl(){
-        Label label = new Label("Bandwidth :");
-        label.getStylesheets().add("resources/css/label.css");
-        
-        return label;
-    }
-    
-    private ComboBox<String> getBandwidthCmb(){
-        ObservableList<String>list = FXCollections.observableArrayList("Golden Section Search");
-        ComboBox<String> cmb = new ComboBox<>(list);
-        cmb.getStylesheets().add("resources/css/combobox.css");
-        
-        return cmb;
-    }
-    
-    private Label getSelectionLbl(){
-        Label label = new Label("Selection :");
-        label.getStylesheets().add("resources/css/label.css");
-        
-        return label;
-    }
-    
-    private ComboBox<String> getSelectionCmb(){
-        ObservableList<String>list = FXCollections.observableArrayList("AIC","CV","AICc");
-        ComboBox<String> cmb = new ComboBox<>(list);
-        cmb.getStylesheets().add("resources/css/combobox.css");
-        
-        return cmb;
-    }
-    
+      
     private Label getDepVarLbl(){
         Label label = new Label("Dependent Variable :");
         label.getStylesheets().add("resources/css/label.css");
@@ -289,7 +192,7 @@ public class GWRAnalyzeView extends HBox{
     }
     
     private void bindDataToModel(){
-        depVarFld.textProperty().bindBidirectional(gwr.getDepVarProperty());
+        depVarFld.textProperty().bindBidirectional(lm.getDepVarProperty());
     }
     
     public void closeStage(){
