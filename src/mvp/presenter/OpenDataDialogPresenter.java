@@ -40,78 +40,104 @@ import org.controlsfx.control.spreadsheet.SpreadsheetCellType;
  * @author Eki
  */
 public class OpenDataDialogPresenter {
-    
+
     private final OpenDataDialogView view;
     private final MainWindowView mwview;
     private final Data data;
-    
-    public OpenDataDialogPresenter(OpenDataDialogView view,MainWindowView mwview,Data data){
+
+    public OpenDataDialogPresenter(OpenDataDialogView view, MainWindowView mwview, Data data) {
         this.view = view;
         this.mwview = mwview;
         this.data = data;
         attachEvents();
     }
-    
-    private void attachEvents(){
+
+    private void attachEvents() {
         view.fileBtn.setOnAction(e -> showOpenDialog());
+        view.shapeFileBtn.setOnAction(e -> showOpenMapDialog());
         view.okBtn.setOnAction(e -> {
             try {
-                parseFile(view.filePathField.getText(),view.colHeaderCb.isSelected());
+                parseFile(view.filePathField.getText(), view.colHeaderCb.isSelected());
             } catch (IOException ex) {
                 Logger.getLogger(OpenDataDialogPresenter.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
         view.cancelBtn.setOnAction(e -> view.closeStage());
     }
-    
-    private void showOpenDialog(){
-        FileChooser fileDialog = new FileChooser();
-        fileDialog.setTitle("Open File");
-        fileDialog.setInitialDirectory(new File("C:\\"));
-        fileDialog.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter("Excel Files", "*.xls", "*.xlsx"));
-        
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        File file = fileDialog.showOpenDialog(stage);
-        view.enterField(file.getPath());
+
+    private void showOpenDialog() {
+        try {
+            FileChooser fileDialog = new FileChooser();
+            fileDialog.setTitle("Open File");
+            fileDialog.setInitialDirectory(new File("C:\\"));
+            fileDialog.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Excel Files", "*.xls", "*.xlsx"));
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            File file = fileDialog.showOpenDialog(stage);
+            view.enterField(file.getPath());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    private void parseFile(String excelFilePath,boolean colHeader) throws IOException{
+    private void showOpenMapDialog() {
+        try {
+            FileChooser fdS = new FileChooser();
+            fdS.setTitle("Open Map File");
+            fdS.setInitialDirectory(new File("C:\\"));
+            fdS.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Shapefiles", "*.shp"));
+
+            Stage stageS = new Stage();
+            stageS.initModality(Modality.APPLICATION_MODAL);
+            File fileS = fdS.showOpenDialog(stageS);
+            view.enterShpField(fileS.getPath());
+            data.setShpPath(fileS.getPath().replaceAll("\\\\", "/"));
+        } catch (Exception e) {
+            data.setShpPath("empty");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void parseFile(String excelFilePath, boolean colHeader) throws IOException {
+        if(view.shapeFilePathField.getText().isEmpty()||view.shapeFilePathField.getText().equalsIgnoreCase("Enter the shapefile path here")){
+            data.setShpPath("empty");
+        }
         try (FileInputStream inputStream = new FileInputStream(new File(excelFilePath))) {
-            GridBase grid = new GridBase(1000,100);
-            ObservableList<String>listHeader = FXCollections.observableArrayList();
-            
+            GridBase grid = new GridBase(1000, 100);
+            ObservableList<String> listHeader = FXCollections.observableArrayList();
+
             try (Workbook workbook = new XSSFWorkbook(inputStream)) {
                 Sheet firstSheet = workbook.getSheetAt(0);
                 data.setRowNumber(firstSheet.getLastRowNum());
                 data.setColumnNumber(firstSheet.getRow(0).getLastCellNum());
                 Iterator<Row> iterator = firstSheet.iterator();
-                
+
                 ObservableList<ObservableList<SpreadsheetCell>> rows = FXCollections.observableArrayList();
                 for (int row = 0; row < grid.getRowCount(); row++) {
                     final ObservableList<SpreadsheetCell> list = FXCollections.observableArrayList();
                     for (int column = 0; column < grid.getColumnCount(); column++) {
-                        list.add(SpreadsheetCellType.STRING.createCell(row, column, 1, 1,""));
+                        list.add(SpreadsheetCellType.STRING.createCell(row, column, 1, 1, ""));
                     }
                     rows.add(list);
                 }
-                
-                if(colHeader){
-                    if(iterator.hasNext()){
+
+                if (colHeader) {
+                    if (iterator.hasNext()) {
                         Row headerRow = iterator.next();
-                        Iterator<Cell>cellIterator = headerRow.cellIterator();
-                        while(cellIterator.hasNext()){
+                        Iterator<Cell> cellIterator = headerRow.cellIterator();
+                        while (cellIterator.hasNext()) {
                             Cell cell = cellIterator.next();
                             listHeader.add(cell.getStringCellValue());
                         }
                     }
-                    
+
                     ObservableList<String> variableType = FXCollections.observableArrayList();
-                    for(int i = 0;i < listHeader.size(); i++){
+                    for (int i = 0; i < listHeader.size(); i++) {
                         variableType.add(null);
                     }
-                    
+
                     while (iterator.hasNext()) {
                         Row nextRow = iterator.next();
                         Iterator<Cell> cellIterator = nextRow.cellIterator();
@@ -120,27 +146,27 @@ public class OpenDataDialogPresenter {
                             switch (cell.getCellType()) {
                                 case Cell.CELL_TYPE_STRING:
                                     variableType.set(cell.getColumnIndex(), "String");
-                                    rows.get(cell.getRowIndex()-1).set(cell.getColumnIndex(),SpreadsheetCellType.STRING.createCell(cell.getRowIndex()-1, cell.getColumnIndex(), 1, 1,cell.getStringCellValue()));
+                                    rows.get(cell.getRowIndex() - 1).set(cell.getColumnIndex(), SpreadsheetCellType.STRING.createCell(cell.getRowIndex() - 1, cell.getColumnIndex(), 1, 1, cell.getStringCellValue()));
                                     break;
                                 case Cell.CELL_TYPE_BOOLEAN:
                                     variableType.set(cell.getColumnIndex(), "Boolean");
-                                    rows.get(cell.getRowIndex()-1).set(cell.getColumnIndex(),SpreadsheetCellType.STRING.createCell(cell.getRowIndex()-1, cell.getColumnIndex(), 1, 1,String.valueOf(cell.getBooleanCellValue())));
+                                    rows.get(cell.getRowIndex() - 1).set(cell.getColumnIndex(), SpreadsheetCellType.STRING.createCell(cell.getRowIndex() - 1, cell.getColumnIndex(), 1, 1, String.valueOf(cell.getBooleanCellValue())));
                                     break;
                                 case Cell.CELL_TYPE_NUMERIC:
                                     variableType.set(cell.getColumnIndex(), "Double");
-                                    rows.get(cell.getRowIndex()-1).set(cell.getColumnIndex(),SpreadsheetCellType.DOUBLE.createCell(cell.getRowIndex()-1, cell.getColumnIndex(), 1, 1,cell.getNumericCellValue()));
+                                    rows.get(cell.getRowIndex() - 1).set(cell.getColumnIndex(), SpreadsheetCellType.DOUBLE.createCell(cell.getRowIndex() - 1, cell.getColumnIndex(), 1, 1, cell.getNumericCellValue()));
                                     break;
                             }
                         }
                     }
-                    
+
                     ObservableList<Variable> variables = FXCollections.observableArrayList();
-                    for(int i = 0;i < listHeader.size() && i < variableType.size(); i++){
-                        Variable variable = new Variable(listHeader.get(i),variableType.get(i));
+                    for (int i = 0; i < listHeader.size() && i < variableType.size(); i++) {
+                        Variable variable = new Variable(listHeader.get(i), variableType.get(i));
                         variables.add(variable);
                     }
                     data.setVariables(variables);
-                }else if(!colHeader){
+                } else if (!colHeader) {
                     while (iterator.hasNext()) {
                         Row nextRow = iterator.next();
                         Iterator<Cell> cellIterator = nextRow.cellIterator();
@@ -148,20 +174,20 @@ public class OpenDataDialogPresenter {
                             Cell cell = cellIterator.next();
                             switch (cell.getCellType()) {
                                 case Cell.CELL_TYPE_STRING:
-                                    rows.get(cell.getRowIndex()).set(cell.getColumnIndex(),SpreadsheetCellType.STRING.createCell(cell.getRowIndex(), cell.getColumnIndex(), 1, 1,cell.getStringCellValue()));
+                                    rows.get(cell.getRowIndex()).set(cell.getColumnIndex(), SpreadsheetCellType.STRING.createCell(cell.getRowIndex(), cell.getColumnIndex(), 1, 1, cell.getStringCellValue()));
                                     break;
                                 case Cell.CELL_TYPE_BOOLEAN:
-                                    rows.get(cell.getRowIndex()).set(cell.getColumnIndex(),SpreadsheetCellType.STRING.createCell(cell.getRowIndex(), cell.getColumnIndex(), 1, 1,String.valueOf(cell.getBooleanCellValue())));
+                                    rows.get(cell.getRowIndex()).set(cell.getColumnIndex(), SpreadsheetCellType.STRING.createCell(cell.getRowIndex(), cell.getColumnIndex(), 1, 1, String.valueOf(cell.getBooleanCellValue())));
                                     break;
                                 case Cell.CELL_TYPE_NUMERIC:
-                                    rows.get(cell.getRowIndex()).set(cell.getColumnIndex(),SpreadsheetCellType.DOUBLE.createCell(cell.getRowIndex(), cell.getColumnIndex(), 1, 1,cell.getNumericCellValue()));
+                                    rows.get(cell.getRowIndex()).set(cell.getColumnIndex(), SpreadsheetCellType.DOUBLE.createCell(cell.getRowIndex(), cell.getColumnIndex(), 1, 1, cell.getNumericCellValue()));
                                     break;
                             }
                         }
                     }
                 }
                 grid.setRows(rows);
-                mwview.drawTable(listHeader,grid);
+                mwview.drawTable(listHeader, grid);
             }
         }
         view.closeStage();

@@ -16,7 +16,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import mvp.model.Data;
-import mvp.model.Gwr;
 
 /**
  *
@@ -44,6 +43,7 @@ public class OpenDataDialogView extends VBox {
     
     private void initOpenDataDialog(){
         filePathLbl.setLabelFor(filePathField);
+        shapeFilePathLbl.setLabelFor(shapeFilePathField);
         HBox upperTopHBox = new HBox(filePathLbl,filePathField,fileBtn);
         upperTopHBox.setAlignment(Pos.BASELINE_CENTER);
         upperTopHBox.setHgrow(filePathField, Priority.ALWAYS);
@@ -68,6 +68,10 @@ public class OpenDataDialogView extends VBox {
     
     public void enterField(String path){
         filePathField.setText(path);
+    }
+    
+    public void enterShpField(String shpPath){
+        shapeFilePathField.setText(shpPath);
     }
     
     private Label getFilePathLbl(){

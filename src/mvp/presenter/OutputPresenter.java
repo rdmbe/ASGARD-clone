@@ -32,7 +32,7 @@ public class OutputPresenter {
         }
     
     private void selectingItem(){
-              view.closeStage();
+        view.closeStage();
     }
 
 }

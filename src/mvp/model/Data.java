@@ -15,21 +15,24 @@ import javafx.collections.ObservableList;
  * @author Eki
  */
 public class Data {
+
     private StringProperty path = new SimpleStringProperty();
+    private StringProperty shpPath = new SimpleStringProperty();
     private ObservableList<Variable> variables = FXCollections.observableArrayList();
     private int rowNumber;
     private int columnNumber;
     
-    public Data(){
+    public Data() {
         
     }
     
-    public Data(String path,ObservableList<Variable>variables){
+    public Data(String path, String shpPath, ObservableList<Variable> variables) {
         this.path.setValue(path);
+        this.shpPath.setValue(shpPath);
         this.variables = variables;
     }
     
-    public StringProperty getPathProperty(){
+    public StringProperty getPathProperty() {
         return path;
     }
     
@@ -37,37 +40,54 @@ public class Data {
         return path.get();
     }
     
-    public void setPath(String path){
+    public void setPath(String path) {
         this.path.setValue(path);
     }
     
-    public void setName(String name){
+    public void setName(String name) {
         this.path.setValue(name);
     }
     
-    public ObservableList<Variable> getVariables(){
+    public ObservableList<Variable> getVariables() {
         return variables;
     }
     
-    public void setVariables(ObservableList<Variable>variables){
+    public void setVariables(ObservableList<Variable> variables) {
         this.variables = variables;
     }
-
+    
     public int getRowNumber() {
         return rowNumber;
     }
-
+    
     public void setRowNumber(int rowNumber) {
         this.rowNumber = rowNumber;
     }
-
+    
     public int getColumnNumber() {
         return columnNumber;
     }
-
+    
     public void setColumnNumber(int columnNumber) {
         this.columnNumber = columnNumber;
     }
+
+    /**
+     * @return the shpPath
+     */
+    public StringProperty getShpPathProperty() {
+        return shpPath;
+    }
     
+    public String getShpPath() {
+        return shpPath.get();
+    }
+
+    /**
+     * @param shpPath the shpPath to set
+     */
+    public void setShpPath(String shpPath) {
+        this.shpPath.setValue(shpPath);
+    }
     
 }

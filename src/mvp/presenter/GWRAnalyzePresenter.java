@@ -20,107 +20,117 @@ import mvp.view.OutputView;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Eki
  */
 public class GWRAnalyzePresenter {
+
     private final GWRAnalyzeView view;
     private final MainWindowView mwview;
     private final Data data;
     private final Gwr gwr;
-    
-    public GWRAnalyzePresenter(GWRAnalyzeView view,MainWindowView mwview,Data data,Gwr gwr){
+
+    public GWRAnalyzePresenter(GWRAnalyzeView view, MainWindowView mwview, Data data, Gwr gwr) {
         this.view = view;
         this.mwview = mwview;
         this.data = data;
         this.gwr = gwr;
         attachEvent();
     }
-    
-    private void attachEvent(){
+
+    private void attachEvent() {
         view.modelCmb.valueProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             gwr.setModel(newValue);
         });
-        
+
         view.xCoordinateCmb.valueProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             gwr.setXCoord(newValue);
         });
-        
+
         view.yCoordinateCmb.valueProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             gwr.setYCoord(newValue);
         });
-        
+
         view.kernelCmb.valueProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             gwr.setKernel(newValue);
         });
-        
+
         view.bandwidthCmb.valueProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             gwr.setBandwidth(newValue);
         });
-        
+
         view.selectionCmb.valueProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             gwr.setSelection(newValue);
         });
-        
+
+        gwr.setShpPath(data.getShpPath());
         view.depVarBtn.setOnAction(e -> showDepVarSelector());
         view.indVarBtn.setOnAction(e -> showIndVarSelector());
         view.okBtn.setOnAction(e -> makeVector());
-        view.cancelBtn.setOnAction (e -> exitStage());
-        
+        view.cancelBtn.setOnAction(e -> exitStage());
+
     }
-    private void exitStage(){
+
+    private void exitStage() {
         view.closeStage();
     }
-    
-    private void showDepVarSelector(){
+
+    private void showDepVarSelector() {
         DepVarSelectorView dvsview = new DepVarSelectorView(data);
-        DepVarSelectorPresenter dvspresenter = new DepVarSelectorPresenter(dvsview,view, null);
+        DepVarSelectorPresenter dvspresenter = new DepVarSelectorPresenter(dvsview, view, null);
         Stage stage = new Stage();
-        Scene scene = new Scene(dvsview,250,400);
+        Scene scene = new Scene(dvsview, 250, 400);
         stage.setScene(scene);
         stage.setTitle("Dependent Variable Selector");
         stage.setResizable(false);
         stage.centerOnScreen();
         stage.show();
     }
-    
-    private void showIndVarSelector(){
+
+    private void showIndVarSelector() {
         IndVarSelectorView ivsview = new IndVarSelectorView(data);
-        IndVarSelectorPresenter dvspresenter = new IndVarSelectorPresenter(ivsview,view,gwr,null,null);
+        IndVarSelectorPresenter dvspresenter = new IndVarSelectorPresenter(ivsview, view, gwr, null, null);
         Stage stage = new Stage();
-        Scene scene = new Scene(ivsview,250,400);
+        Scene scene = new Scene(ivsview, 250, 400);
         stage.setScene(scene);
         stage.setTitle("Independent Variable Selector");
         stage.setResizable(false);
         stage.centerOnScreen();
         stage.show();
     }
-    
-    private void makeVector(){
+
+    private void makeVector() {
         int xCoordIdx = mwview.spreadsheet.getGrid().getColumnHeaders().indexOf(gwr.getXCoord());
         int yCoordIdx = mwview.spreadsheet.getGrid().getColumnHeaders().indexOf(gwr.getYCoord());
         int depVarIdx = mwview.spreadsheet.getGrid().getColumnHeaders().indexOf(gwr.getDepVar());
-        
+
         ObservableList<Integer> indVarsIdx = FXCollections.observableArrayList();
-        for(int i = 0;i < gwr.getIndVar().size();i++){
+        for (int i = 0; i < gwr.getIndVar().size(); i++) {
             indVarsIdx.add(mwview.spreadsheet.getGrid().getColumnHeaders().indexOf(gwr.getIndVar().get(i)));
         }
-        
+
         ObservableList<Object> xCoordValues = FXCollections.observableArrayList();
         ObservableList<Object> yCoordValues = FXCollections.observableArrayList();
+        if (!view.xCoordinateCmb.getValue().equalsIgnoreCase("From shapefiles") || !view.yCoordinateCmb.getValue().equalsIgnoreCase("From shapefiles")) {
+            for (int i = 0; i < data.getRowNumber(); i++) {
+                xCoordValues.add(mwview.spreadsheet.getGrid().getRows().get(i).get(xCoordIdx).getItem());
+                yCoordValues.add(mwview.spreadsheet.getGrid().getRows().get(i).get(yCoordIdx).getItem());
+            }
+        } else {
+            xCoordValues.add("shp");
+            yCoordValues.add("shp");
+        }
+
         ObservableList<Object> depVarValues = FXCollections.observableArrayList();
-        for(int i = 0;i < data.getRowNumber();i++){
-            xCoordValues.add(mwview.spreadsheet.getGrid().getRows().get(i).get(xCoordIdx).getItem());
-            yCoordValues.add(mwview.spreadsheet.getGrid().getRows().get(i).get(yCoordIdx).getItem());
+        for (int i = 0; i < data.getRowNumber(); i++) {
             depVarValues.add(mwview.spreadsheet.getGrid().getRows().get(i).get(depVarIdx).getItem());
         }
-        
+
         ObservableList<ObservableList<Object>> indVarValues = FXCollections.observableArrayList();
-        for(int i = 0;i < indVarsIdx.size();i++){
+        for (int i = 0; i < indVarsIdx.size(); i++) {
             ObservableList<Object> indvarValue = FXCollections.observableArrayList();
-            for(int j = 0;j < data.getRowNumber();j++){
+            for (int j = 0; j < data.getRowNumber(); j++) {
                 indvarValue.add(mwview.spreadsheet.getGrid().getRows().get(j).get(indVarsIdx.get(i)).getItem());
             }
             indVarValues.add(indvarValue);
@@ -132,33 +142,33 @@ public class GWRAnalyzePresenter {
         gwr.setIndVarValues(indVarValues);
 
         gwr.calculate();
-        
-        OutputView outview = new OutputView(data);
-        OutputPresenter outpresenter = new OutputPresenter(outview,view,null);
-    
+
+        OutputView outview = new OutputView(data,indVarsIdx.size());
+        OutputPresenter outpresenter = new OutputPresenter(outview, view, null);
+
         Stage stage = new Stage();
-        Scene scene = new Scene(outview,1600,700);
+        Scene scene = new Scene(outview, outview.getWidth(), outview.getMaxHeight());
         stage.setScene(scene);
         stage.setTitle("Output ASGARD");
         stage.setResizable(false);
         stage.centerOnScreen();
         stage.show();
-        outview.setTextArea(0,gwr.hasil());
-        
+        outview.setTextArea(0, gwr.hasil());
+
         view.closeStage();
     }
-    
-   public void ShowOutputView(){
-        
-     OutputView outview = new OutputView(data);
-     OutputPresenter outpresenter = new OutputPresenter(outview,view,null);
-    
+
+    public void ShowOutputView() {
+
+        OutputView outview = new OutputView(data,gwr.getIndVar().size());
+        OutputPresenter outpresenter = new OutputPresenter(outview, view, null);
+
         Stage stage = new Stage();
-        Scene scene = new Scene(outview,1600,700);
+        Scene scene = new Scene(outview, 1600, 700);
         stage.setScene(scene);
         stage.setTitle("Output ASGARD");
         stage.setResizable(false);
         stage.centerOnScreen();
         stage.show();
-}
+    }
 }
